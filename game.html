@@ -1,0 +1,153 @@
+<html><head><base href="miguel">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> 4 Palabras una historia</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  #game-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  #images-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .bible-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  #word-input {
+    font-size: 18px;
+    padding: 5px;
+    width: 200px;
+    margin-bottom: 10px;
+  }
+  #submit-btn {
+    font-size: 18px;
+    padding: 5px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #message {
+    font-size: 18px;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  #trophy {
+    display: none;
+    width: 100px;
+    height: 100px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+  <div id="game-container">
+    <h1> 4 Palabras una historia</h1>
+    <div id="images-container"></div>
+    <input type="text" id="word-input" placeholder="Escribe la palabra...">
+    <button id="submit-btn">Enviar</button>
+    <p id="message"></p>
+    <p id="level-info">Nivel: <span id="current-level">1</span>/2</p>
+    <svg id="trophy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;">
+      <path fill="#FFD700" d="M20.2,2H19.5H18C17.1,2 16,3 16,4H8C8,3 6.9,2 6,2H4.5H3.8H2V11C2,12 3,13 4,13H6.2C6.6,15 7.9,16.7 11,17V19.1C8.8,19.3 8,20.4 8,21.7V22H16V21.7C16,20.4 15.2,19.3 13,19.1V17C16.1,16.7 17.4,15 17.8,13H20C21,13 22,12 22,11V2H20.2M4,11V4H6V6V11C5.1,11 4.3,11 4,11M20,11C19.7,11 18.9,11 18,11V6V4H20V11Z"/>
+    </svg>
+  </div>
+
+  <script>
+    const levels = [
+      {
+        images: [
+          { src: 'tinajas 3.jfif', alt: 'Arca de Noé con animales' },
+          { src: 'vino.jfif', alt: 'Moisés separando el Mar Rojo' },
+          { src: 'boda.jfif', alt: 'David enfrentando a Goliat' },
+          { src: 'agua.jfif', alt: 'Jesús con sus discípulos' }
+        ],
+        word: 'bodas de cana'
+        
+      },
+      {
+        images: [
+          { src: 'endemoniado.jfif', alt: 'La Última Cena' },
+          { src: 'cementerio.jfif', alt: 'La Creación de Adán' },
+          { src: 'cerdos.jfif', alt: 'El Nacimiento de Jesús' },
+          { src: 'mar.jfif', alt: 'La Crucifixión de Jesús' }
+        ],
+        word: 'endemoniado gadareno'
+      }
+    ];
+
+    let currentLevel = 0;
+
+    const imagesContainer = document.getElementById('images-container');
+    const wordInput = document.getElementById('word-input');
+    const submitBtn = document.getElementById('submit-btn');
+    const message = document.getElementById('message');
+    const levelInfo = document.getElementById('current-level');
+    const trophy = document.getElementById('trophy');
+
+    function loadLevel(level) {
+      imagesContainer.innerHTML = '';
+      levels[level].images.forEach(img => {
+        const imgElement = document.createElement('img');
+        imgElement.src = img.src;
+        imgElement.alt = img.alt;
+        imgElement.className = 'bible-image';
+        imagesContainer.appendChild(imgElement);
+      });
+      wordInput.value = '';
+      message.textContent = '';
+      levelInfo.textContent = level + 1;
+    }
+
+    function checkAnswer() {
+      const userAnswer = wordInput.value.trim().toLowerCase();
+      const correctAnswer = levels[currentLevel].word.toLowerCase();
+
+      if (userAnswer === correctAnswer) {
+        if (currentLevel === levels.length - 1) {
+          message.textContent = '¡Felicidades! Has completado el juego.';
+          trophy.style.display = 'block';
+          submitBtn.disabled = true;
+        } else {
+          message.textContent = '¡Correcto! Pasando al siguiente nivel.';
+          currentLevel++;
+          setTimeout(() => {
+            loadLevel(currentLevel);
+          }, 1500);
+        }
+      } else {
+        message.textContent = 'Incorrecto. Intenta de nuevo.';
+      }
+    }
+
+    submitBtn.addEventListener('click', checkAnswer);
+    wordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        checkAnswer();
+      }
+    });
+
+    loadLevel(currentLevel);
+  </script>
+</body>
+</html>
